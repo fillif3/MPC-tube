@@ -1,11 +1,10 @@
-function [errors,errors_eq] = safe_error(state,obstacles,max_y_error,max_alfa,a,b)
+function [errors] = safe_error(state,obstacles,max_y_error,max_alfa,a,b)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
 
 
-
-errors_eq=[];
 errors=zeros(8,1);
+
 errors(1)=-state(5)-max_y_error;
 errors(2)=state(5)-max_y_error;
 number_of_obstacles=length(obstacles);

@@ -4,7 +4,7 @@ function cost=cost_following_trajectory(inputs,state,model,trajectory,Q,R,S,lamb
 %   Detailed explanation goes here
 cost=0;
 for i=1:horizon
-    input = inputs((1+(i-1)*number_of_inputs):(i*number_of_inputs));
+    input = inputs((1+(i-1)*number_of_inputs):(i*number_of_inputs))';
     state = model(input,state);
     input_diff = input-previous_input;
     state_diff = state-trajectory{i};
