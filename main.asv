@@ -1,0 +1,40 @@
+%% Prepare parameters 
+% Physical parameters
+a=0.3;
+b=0.3;
+force=4000;
+m=2050;
+Iz=3344;
+friction=0.5;
+Calpha=65000;
+
+
+% MPC parameters
+
+time_step=0.05;
+horizon=16;
+
+% Constraints parameters
+
+error_y_max=3.5;
+input_max=0.5;
+alpha_max=4/180*pi;
+Q=diag(0,0.1,1,1,5,0);
+R=eye(3);
+S=eye(3);
+lambda=10^5;
+
+% Simulation parameters
+
+number_of_iterations=1000;
+trajectory=get_trajectory(number_of_iterations);
+
+%% Simulation
+% Starting
+
+State=zeros(6,1);
+state(2)=7;
+
+obstacles={[9,1.2,]}
+
+
