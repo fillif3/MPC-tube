@@ -8,7 +8,7 @@ cost_function= @(input) cost_following_trajectory(input,state,model,trajectory,.
     Q,R,S,lambda,horizon,number_of_inputs,previous_input,nonlinear_constraint_function);
 
 ub = ones(horizon*number_of_inputs)*max_input;
-options = optimoptions('fmincon','Display','off','Algorithm','sqp');
+options = optimoptions('ga','Display','off','MaxGenerations',25);
 
 
 %[inputs,fval,flag,message] = fmincon(cost_function,zeros(1,horizon*number_of_inputs),[],[],[],[],-ub,ub,[],options);

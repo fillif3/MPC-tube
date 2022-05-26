@@ -1,4 +1,4 @@
-function state=nominal_discrete_model(state,input,time_step,a,b,friction,Fzf,...
+function state=nominal_discrete_simplfied_model(state,input,time_step,a,b,friction,Fzf,...
     Fzr,m,Iz,Cr,psi_d)
 
 p=Iz/(m*b);
@@ -8,7 +8,7 @@ der(1)=2*(a+b)*friction*Fzf*input(2)/(m*b)-state(3)*state(2); %There is an error
 der(2)=2*friction*Fzf*input(1)/m+2*friction*Fzr*input(3)/m+state(3)*state(1)-state(3)^2*p;
 der(3)=2*a*friction*Fzf*input(2)/Iz-2*b*Cr*alfa_r*state(1)/(Iz*state(2))+2*b*Cr*alfa_r*(b+p)*state(3)/(Iz*state(2));
 der(4)=state(3)-psi_d;
-der(5)=state(1)*cos(state(4))+state(2)*sin(state(4));
-der(6)=state(2)*cos(state(4))-state(1)*sin(state(4));
+der(5)=state(1)+state(2)*state(4);
+der(6)=state(2);
 state=state+time_step*der;
 end
