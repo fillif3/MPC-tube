@@ -15,6 +15,7 @@ noise_bounds = [0.2,0.2,0.2,0.005,0.05,0.05]';
 time_step=0.05;
 horizon=16;
 number_of_inputs=3;
+nominal_velocity=7;
 Q=diag([1,0.1,1,1,5,0]);
 R=eye(3);
 S=eye(3);
