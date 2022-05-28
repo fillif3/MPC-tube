@@ -9,6 +9,7 @@ friction=0.5;
 Calpha=65000;
 noise_bounds = [0.2,0.2,0.2,0.005,0.05,0.05]';
 p=Iz/(m*b);
+L=8.5627;
 
 % MPC parameters
 
@@ -58,4 +59,36 @@ B(3,2)=2*a*friction*force/Iz;
 A=A*time_step+eye(6);
 B=B*time_step;
 
-Ak = A-B*K;
+%Ak = A-B*K;
+
+%% lateral  set computation
+
+A_lateral = [A(2,2),A(2,6);A(6,2),A(6,6)];
+B_lateral=[B(2,1),B(2,3);B(6,1),B(6,3)];
+K_lateral = [K(1,2),K(1,6);K(3,2),K(3,6)];
+
+Ak_lateral = A_lateral-B_lateral*K_lateral;
+
+Noise_set_orignal_A_lateral=[eye(2);-eye(2)];
+Noise_set_orignal_b_lateral = [noise_bounds(2);noise_bounds(6);noise_bounds(2);noise_bounds(6)];
+Noise_set_orignal_lateral = Polyhedron(Noise_set_orignal_A_lateral,Noise_set_orignal_b_lateral);
+
+previous_omega_lateral = Noise_set_orignal_lateral;
+
+while true
+    B_set_lateral=get_nonlinear_bound(previous_omega_lateral,L,2);
+    W_lateral= Noise_set_orignal_lateral+B_set_lateral;
+    omega_lateral = Ak_lateral*previous_omega_lateral+W_lateral;
+    if omega_lateral<=previous_omega_lateral
+        break
+    end
+    if (~(omega_lateral>=previous_omega_lateral))
+        disp('jjj')
+    end
+    %omega_lateral = Union([previous_omega_lateral,omega_lateral]);
+    previous_omega_lateral=omega_lateral;
+end
+
+plot(omega_lateral)
+hold on
+plot(previous_omega_lateral)
