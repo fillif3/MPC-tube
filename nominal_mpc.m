@@ -1,14 +1,14 @@
-function u = nominal_mpc(state,trajectory,obstacles,model,Q,R,S,horizon,...
-    lambda,number_of_inputs,max_y_error,a,b,max_alfa,previous_input,max_input)
+function u = nominal_mpc(state,model,Q,R,velocity,horizon,...
+    lambda,nonlinear_constraint,max_input)
 %UNTITLED Summary of this function goes here
 %   Detailed explanation goes here
+number_of_inputs=length(max_input);
 
-nonlinear_constraint_function = @(state) safe_error(state,obstacles,max_y_error,max_alfa,a,b);
-cost_function= @(input) cost_following_trajectory(input,state,model,trajectory,...
-    Q,R,S,lambda,horizon,number_of_inputs,previous_input,nonlinear_constraint_function);
+cost_function= @(input) cost_following_trajectory(input,state,model,...
+    Q,R,velocity,lambda,horizon,number_of_inputs,nonlinear_constraint);
 
-ub = ones(horizon*number_of_inputs)*max_input;
-options = optimoptions('ga','Display','off','MaxGenerations',25);
+ub = repmat(max_input,[number_of_inputs*horizon,1]);%ones(horizon*number_of_inputs)*max_input;
+options = optimoptions('ga','Display','off');%,'MaxGenerations',25);
 
 
 %[inputs,fval,flag,message] = fmincon(cost_function,zeros(1,horizon*number_of_inputs),[],[],[],[],-ub,ub,[],options);

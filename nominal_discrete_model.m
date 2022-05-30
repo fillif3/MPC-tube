@@ -1,14 +1,35 @@
-function state=nominal_discrete_model(state,input,time_step,a,b,friction,Fzf,...
-    Fzr,m,Iz,Cr,psi_d)
+function state=nominal_discrete_model(state,input,timeStep)
 
-p=Iz/(m*b);
-alfa_r=(state(1)-b*state(3))/state(2);
-der=zeros(6,1);
-der(1)=2*(a+b)*friction*Fzf*input(2)/(m*b)-state(3)*state(2); %There is an error in the paper
-der(2)=2*friction*Fzf*input(1)/m+2*friction*Fzr*input(3)/m+state(3)*state(1)-state(3)^2*p;
-der(3)=2*a*friction*Fzf*input(2)/Iz-2*b*Cr*alfa_r*state(1)/(Iz*state(2))+2*b*Cr*alfa_r*(b+p)*state(3)/(Iz*state(2));
-der(4)=state(3)-psi_d;
-der(5)=state(1)*cos(state(4))+state(2)*sin(state(4));
-der(6)=state(2)*cos(state(4))-state(1)*sin(state(4));
-state=state+time_step*der;
+% if input(2)==0
+%     state(1)=state(1)+input(1)*cos(state(3))*timeStep;
+%     state(2)=state(2)+input(1)*sin(state(3))*timeStep;
+% elseif input(1)==0
+%     state(3)=state(3)+input(2)*timeStep;
+% elseif sign(input(2))*sign(input(1))>0
+%     beta = state(3)+pi/2;
+%     R = input(1)/input(2);
+%     circleX = state(1)+cos(beta)*R;
+%     circleY = state(2)+sin(beta)*R;
+%     delta_theta= input(2)*timeStep;
+%     beta=beta+delta_theta;
+%     state(3)=state(3)+delta_theta;
+%     state(1)=circleX-cos(beta)*R;
+%     state(2)=circleY-sin(beta)*R;
+% else
+%     beta = state(3)-pi/2;
+%     R = input(1)/input(2);
+%     circleX = state(1)+cos(beta)*R;
+%     circleY = state(2)+sin(beta)*R;
+%     delta_theta= input(2)*timeStep;
+%     beta=beta-delta_theta;
+%     state(3)=state(3)+delta_theta;
+%     state(1)=circleX-cos(beta)*R;
+%     state(2)=circleY-sin(beta)*R;
+% end
+der=[state(4)*cos(state(3));
+    state(4)*sin(state(3));
+    state(5);
+    input(1);
+    input(2)];
+state=state+der*timeStep;
 end
