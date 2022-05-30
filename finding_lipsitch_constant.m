@@ -10,7 +10,7 @@ max_y_error=3.5;
 input_max=0.5;
 max_alfa=4/180*pi;
 max_input=0.5;
-
+model2 = @(x) g(x,Iz,m,b,7,Calpha);
 model = @(x) -find_len_of_gradient_constant(x,Calpha,b,Iz,m,7);
 nonlinear_constraint_function = @(x) [safe_error(x,[],max_y_error,max_alfa,a,b);...
     safe_error(x+0.001,[],max_y_error,max_alfa,a,b)];
