@@ -26,10 +26,8 @@ function state=nominal_discrete_model(state,input,timeStep)
 %     state(1)=circleX-cos(beta)*R;
 %     state(2)=circleY-sin(beta)*R;
 % end
-der=[state(4)*cos(state(3));
-    state(4)*sin(state(3));
-    state(5);
-    input(1);
+der=[input(1)*cos(state(3));
+    input(1)*sin(state(3));
     input(2)];
 state=state+der*timeStep;
 end
