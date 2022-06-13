@@ -32,7 +32,7 @@ X_set_full = Polyhedron(A,b);
 
 
 
-K=[1.17,1.03];
+K=[1.17,1.03]*0.9;
 
 Ak = A_sys-B_sys*K;
 noise_bounds = [1;1]*0.7;

@@ -1,7 +1,6 @@
-function tube=get_minimum_linear_robust_invariant_set(A,W,tresh)
+function tube=get_minimum_linear_robust_invariant_set(A,W,tresh,s)
 %UNTITLED3 Summary of this function goes here
 %   Detailed explanation goes here
-s=0;
 while true
     s=s+1;
     alpha = get_alpha(A,W,s);
