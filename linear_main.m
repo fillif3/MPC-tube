@@ -1,40 +1,42 @@
-clear
-clc
+%clear
+%clc
 rng("default")
 %% System definition
 
 A_sys = [1,1;0,1];%[1,Ts;0,1];
-B_sys = [1;1];%[0;Ts];
+B_sys = [0;1];%[0;Ts];
 number_of_states=length(A_sys);
 [~,number_inputs]=size(B_sys);
+Ts=1;
+% Noise
+noise_bounds = [0.1;1.3]*0.5;
+W_set=get_noise_set_from_bounds(noise_bounds*Ts);
 
+% System function
+%system_function =@(x,u) A_sys*x+B_sys*u+(rand(size(noise_bounds))*2.*noise_bounds-(noise_bounds));
+highest_variance_position=10;
+system_function=@(x,u) biased_system(A_sys,B_sys,x,u,highest_variance_position,noise_bounds/2);
+system_equation_nominal=@(x,u) A_sys*x+B_sys*u;
 
-A=[1,1;1,0;-1,-1;-1,0];
-b=ones(4,1)*10;
+% Constraints
+A=[0,1;1,0;0,-1;-1,0];
+b=[1.5;30;1.5;30];
 X_set_full = Polyhedron(A,b);
-
 Au=[eye(number_inputs);-eye(number_inputs)];
 bu=ones(number_inputs*2,1)*6;
 U_set_full = Polyhedron(Au,bu);
-%plot(X_states_full)
-Ts=1;
+
+%Noise
 
 
 
+%% Internal controller
 
-noise_bounds = [1;1]*0.7;
-W_set=get_noise_set_from_bounds(noise_bounds*Ts);
-%hold on
-%plot(W_set)
+Q_internal=[1,0;0,1];
+R_internal=0.1;
+[K,~,~] = dlqr(A_sys,B_sys,Q_internal,R_internal,0);
 
-
-%Q=diag([10,0.1]);
-%R=1;
-%[K,~,~]= dlqr(A_sys,B_sys,Q,R);
-
-% Tube controller
-
-K=[1.17,1.03];
+%K=[1.17,1.03]*0.5;
 Ak_sys = A_sys-B_sys*K;
 
 
@@ -55,7 +57,7 @@ xlabel('u1')
 legend('Reduced input set')
 
 %% Nominal MPC
-horizon=20;
+horizon=5;
 
 [F,H]=get_prediction_matrices(A_sys,B_sys,horizon);
 [A_states,b_states] = get_prediction_constraints(X_set_nominal.A,X_set_nominal.b,horizon);
