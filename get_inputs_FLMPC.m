@@ -9,7 +9,7 @@ options = optimoptions('ga','MaxGenerations',15,'PopulationSize',120);
 [inputs,FVAL,EXITFLAG,OUTPUT] = ga(cost_function,horizon*number_of_inputs,A,b,[],[],[],[],nonlocon,options);
 disp(inputs)
 if EXITFLAG~=1
-    kewq=1;
+    kewq=1
 end
 u=inputs(1);
 end
@@ -20,10 +20,15 @@ ceq=0;
 c=horizon-0.1;
 
 A_set = [eye(length(state));-eye(length(state))];
-set = Ak_sys*Polyhedron(state'-nominal_state');
+try
+    set = Ak_sys*Polyhedron(state'-nominal_state');
+catch
+    disp(state)
+    disp(nominal_state)
+end
 for i=1:horizon
     u=inputs((number_of_inputs*(i-1)+1):number_of_inputs*i);
-    out = evalfis(fis,nominal_state(1));
+    out = evalfis(fis,abs(nominal_state));
     b_set = [0.1*out;out;0.1*out;out];
     set = Ak_sys*(Polyhedron(A_set,b_set)+set);
     nominal_state = system_equation_nominal(nominal_state,u);

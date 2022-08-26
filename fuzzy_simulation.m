@@ -1,4 +1,5 @@
 warning('off','all')
+close all
 %% Simulation
 Number_of_iterations=100;
 state=[20;0];
@@ -10,6 +11,8 @@ hold on
 %plot(X_set_nominal,'color','g')
 xlabel('position')
 ylabel('velocity')
+nominal_state_history(1,:)=nominal_state;
+state_history(1,:)=state;
 for i=1:Number_of_iterations
     %b_inequ = b_inequ_function(nominal_state);
     cost_function = @(U) (F*state+H*U')'*Q_full*(F*state+H*U') +U*R_full*U';
@@ -31,13 +34,17 @@ for i=1:Number_of_iterations
     
 
     nominal_state=A_sys*nominal_state+B_sys*u;
-    state_history(i,:)=state;
-    nominal_state_history(i,:)=nominal_state;
-    plot(nominal_state_history(1:i,1),nominal_state_history(1:i,2),'b*-');
-    plot(state_history(1:i,1),state_history(1:i,2),'k*-');
+    state_history(i+1,:)=state;
+    nominal_state_history(i+1,:)=nominal_state;
+    plot(nominal_state_history(1:i+1,1),nominal_state_history(1:i+1,2),'b*-');
+    plot(state_history(1:i+1,1),state_history(1:i+1,2),'k*-');
+    if i==1
+        plot(0,0,'g*')
+        legend('feasible_set','nominal state trajectory','real state trajectory','origin','AutoUpdate','off')
+    end
 
-
-    pause(0.1) 
+    pause(0.001) 
+    saveas(gcf,'Barchart.png')
 end
 
 hold on
