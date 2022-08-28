@@ -6,17 +6,22 @@ state=[20;0];
 nominal_state=state;
 state_history =zeros(Number_of_iterations,number_of_states);
 nominal_state_history =zeros(Number_of_iterations,number_of_states);
-plot(X_set_full)
+X_set_unlikely = X_set_full+Polyhedron([0,0.2;0,-0.2]);
+plot(X_set_unlikely,'color','r')
 hold on
+plot(X_set_full,'color','y')
+
+
 %plot(X_set_nominal,'color','g')
 xlabel('position')
 ylabel('velocity')
 nominal_state_history(1,:)=nominal_state;
 state_history(1,:)=state;
 for i=1:Number_of_iterations
+    nominal_state=state;
     %b_inequ = b_inequ_function(nominal_state);
     cost_function = @(U) (F*state+H*U')'*Q_full*(F*state+H*U') +U*R_full*U';
-    u = get_inputs_FLMPC(fisout,Ak_sys,cost_function,X_set_full,horizon,number_inputs,...
+    u = get_inputs_FLMPC({fisout,fisout_main},Ak_sys,cost_function,{X_set_unlikely,X_set_full},horizon,number_inputs,...
         A_inputs,b_inputs,system_equation_nominal,state,nominal_state);
     %Hes=H'*Q_full*H+R_full;
     %grad=2*nominal_state'*F'*Q_full*H;
@@ -40,7 +45,7 @@ for i=1:Number_of_iterations
     plot(state_history(1:i+1,1),state_history(1:i+1,2),'k*-');
     if i==1
         plot(0,0,'g*')
-        legend('feasible_set','nominal state trajectory','real state trajectory','origin','AutoUpdate','off')
+        legend('feasible set','main feasible set','nominal state trajectory','real state trajectory','origin','AutoUpdate','off')
     end
 
     pause(0.001) 
