@@ -5,8 +5,6 @@ dist= abs(x(1)-highest_variance_position);
 %current_var=max_var/(1+dist/5);
 current_var=max_var/(1+dist/5)*abs(x(2))/1.5;
 noise=normrnd([0;0],current_var);
-disp(noise)
-disp(current_var)
 state= A_sys*x+B_sys*u+noise;
 
 end

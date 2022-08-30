@@ -1,8 +1,9 @@
 warning('off','all')
 close all
 %% Simulation
-Number_of_iterations=100;
+Number_of_iterations=25;
 state=[20;0];
+previous_solutions=[];
 nominal_state=state;
 state_history =zeros(Number_of_iterations,number_of_states);
 nominal_state_history =zeros(Number_of_iterations,number_of_states);
@@ -17,12 +18,15 @@ xlabel('position')
 ylabel('velocity')
 nominal_state_history(1,:)=nominal_state;
 state_history(1,:)=state;
+
 for i=1:Number_of_iterations
     nominal_state=state;
     %b_inequ = b_inequ_function(nominal_state);
     cost_function = @(U) (F*state+H*U')'*Q_full*(F*state+H*U') +U*R_full*U';
-    u = get_inputs_FLMPC({fisout,fisout_main},Ak_sys,cost_function,{X_set_unlikely,X_set_full},horizon,number_inputs,...
-        A_inputs,b_inputs,system_equation_nominal,state,nominal_state);
+    tic
+    [u,previous_solutions] = get_inputs_FLMPC({fisout,fisout_main},Ak_sys,cost_function,{X_set_unlikely,X_set_full},horizon,number_inputs,...
+        A_inputs,b_inputs,system_equation_nominal,state,nominal_state,previous_solutions,-2,2);
+    toc
     %Hes=H'*Q_full*H+R_full;
     %grad=2*nominal_state'*F'*Q_full*H;
     %b_eq=b_eq_function(nominal_state);
