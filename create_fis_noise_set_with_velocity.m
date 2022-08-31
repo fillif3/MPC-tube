@@ -25,3 +25,4 @@ opt.InputMembershipFunctionType = "trimf";
     fis = genfis(input_full,output_full,opt);
 [in,out,rule] = getTunableSettings(fis);
 fisout = tunefis(fis,[in;out],input_full,output_full,tunefisOptions("Method","anfis"));
+fis_set={fisout};

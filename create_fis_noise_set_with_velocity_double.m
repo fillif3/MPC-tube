@@ -31,3 +31,5 @@ fisout = tunefis(fis,[in;out],input_full,output_full(:,1),tunefisOptions("Method
     fis = genfis(input_full,output_full(:,2),opt);
 [in,out,rule] = getTunableSettings(fis);
 fisout_main = tunefis(fis,[in;out],input_full,output_full(:,2),tunefisOptions("Method","anfis"));
+
+fis_set={fisout_main,fisout};
