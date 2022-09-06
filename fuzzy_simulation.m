@@ -1,5 +1,6 @@
 warning('off','all')
 close all
+rng("default")
 %% Simulation
 Number_of_iterations=25;
 state=[20;0];
@@ -33,7 +34,8 @@ for i=1:Number_of_iterations
     %b_inequ = b_inequ_function(nominal_state);
     cost_function = @(U) (F*state+H*U')'*Q_full*(F*state+H*U') +U*R_full*U';
     tic
-    [u,previous_solutions] = get_inputs_FLMPC(fis_set,Ak_sys,cost_function,X_set_set,horizon,number_inputs,...
+
+    [u,previous_solutions] = get_inputs_FLMPC_Paterns(fis_set,Ak_sys,cost_function,X_set_set,horizon,number_inputs,...
         A_inputs,b_inputs,system_equation_nominal,state,nominal_state,previous_solutions,-2,2);
     toc
     %Hes=H'*Q_full*H+R_full;
